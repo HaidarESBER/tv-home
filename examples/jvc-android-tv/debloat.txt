@@ -1,0 +1,37 @@
+# JVC Android TV (Expressluck "martin"), Android 14, build UKNV.260602.001
+# Everything is DISABLED for user 0, never uninstalled. Undo with restore.ps1 (same folder).
+# Kept on purpose: Chromecast (mediashell), Live TV (mediatek tvcenter/freeviewplay, freeview tifbridge/mdsclient/fvpconfigauth)
+
+# Tracking / telemetry
+tv.anoki.acr.anokiacroptin         # ACR: logs what you watch
+com.google.android.feedback
+com.google.android.partnersetup
+com.mstar.android.tv.disclaimercustomization
+
+# Ads / junk content
+com.cltv.fast                      # FAST channels
+com.google.android.play.games
+com.google.android.youtube.tvmusic
+com.google.android.backdrop        # ambient screensaver
+fusion.android.tv.demo             # retail demo mode
+com.expressluck.tvhelpmanual
+
+# Voice search and screen reader (not used)
+com.google.android.katniss
+com.google.android.marvin.talkback
+
+# Freeview catch-up apps (not used). tifbridge, mdsclient and fvpconfigauth stay enabled for Live TV.
+uk.co.freeview.amc_catchup
+uk.co.freeview.amc_horror
+uk.co.freeview.bbc
+uk.co.freeview.bbc_sounds
+uk.co.freeview.ch4_vod
+uk.co.freeview.ch5
+uk.co.freeview.explore
+uk.co.freeview.itv
+uk.co.freeview.onnow
+uk.co.freeview.sony_kids_vod
+uk.co.freeview.stv
+uk.co.freeview.uktv
+
+# The stock launcher, home recommendations and Google setup wizard are disabled by the launcher install step (see README.md).
