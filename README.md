@@ -44,6 +44,20 @@ launcher/build-and-install.sh                               # build + install th
 
 Undo everything with `tools/restore.sh <the same list>`.
 
+## Do it by hand (Windows)
+
+Install Python 3, JDK 17 and the Android SDK (platform 34, build-tools 34.0.0), then from the repo root:
+
+```powershell
+python -m venv tools\venv; tools\venv\Scripts\pip install -r tools\requirements.txt
+$env:TV_HOST = "192.168.x.y"                             # your TV's IP
+tools\venv\Scripts\python.exe -I tools\tv.py --probe
+powershell -ExecutionPolicy Bypass -File launcher\build-windows.ps1   # builds launcher\build\tvhome.apk
+```
+
+Push and install the APK with `tv.py --push-b64` and `pm install -r`, as in `launcher/build-and-install.sh`. A full worked
+example, including the gotchas on Windows, is in [examples/jvc-android-tv](examples/jvc-android-tv/README.md).
+
 ## What's here
 
 | Path | What it is |
