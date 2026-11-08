@@ -20,6 +20,11 @@
         <item>com.android.tv.settings</item>
     </string-array>
 
+    <!-- Apps shown with their round/square icon instead of their (badly cropped) banner. -->
+    <string-array name="icon_apps">
+        <item>com.sneig.livedrama</item>
+    </string-array>
+
     <!-- The TV's Live TV / tuner app, listed last in the Inputs menu. Empty to leave it out.
          Common ones: com.tcl.tv (TCL), com.mediatek.wwtv.tvcenter (Xiaomi, many MediaTek sets),
          com.google.android.tv (Google Live Channels), com.sony.dtv.tvx (Sony). -->

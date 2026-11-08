@@ -354,6 +354,7 @@ public class MainActivity extends Activity {
             a.component = new ComponentName(ai.packageName, ai.name);
             Drawable banner = ai.loadBanner(pm);
             if (banner == null) banner = ai.applicationInfo.loadBanner(pm);
+            if (Arrays.asList(getResources().getStringArray(R.array.icon_apps)).contains(ai.packageName)) banner = null;
             if (banner != null && banner.getIntrinsicHeight() > 0
                     && (float) banner.getIntrinsicWidth() / banner.getIntrinsicHeight() < 1.4f) banner = null;
             a.isBanner = banner != null;
