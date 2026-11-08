@@ -9,6 +9,7 @@
         <item>com.netflix.ninja</item>
         <item>com.plexapp.android</item>
         <item>com.google.android.youtube.tv</item>
+        <item>org.smarttube.stable</item>
         <item>com.sneig.livedrama</item>
         <item>com.android.vending</item>
     </string-array>
