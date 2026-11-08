@@ -324,11 +324,11 @@ public class MainActivity extends Activity {
         p.setId(View.generateViewId());
         GradientDrawable bg = new GradientDrawable();
         bg.setCornerRadius(dp(15));
-        bg.setColor(0x66000000);
+        bg.setColor(0xA6000000);
         bg.setStroke(dp(1), 0x33FFFFFF);
         p.setBackground(bg);
         p.setOnFocusChangeListener((v, has) -> {
-            bg.setColor(has ? 0xF2FFFFFF : 0x66000000);
+            bg.setColor(has ? 0xF2FFFFFF : 0xA6000000);
             ((TextView) v).setTextColor(has ? 0xFF111111 : 0xE6FFFFFF);
             v.animate().scaleX(has ? 1.08f : 1f).scaleY(has ? 1.08f : 1f)
                     .setInterpolator(new OvershootInterpolator(2f)).setDuration(220).start();
@@ -354,6 +354,8 @@ public class MainActivity extends Activity {
             a.component = new ComponentName(ai.packageName, ai.name);
             Drawable banner = ai.loadBanner(pm);
             if (banner == null) banner = ai.applicationInfo.loadBanner(pm);
+            if (banner != null && banner.getIntrinsicHeight() > 0
+                    && (float) banner.getIntrinsicWidth() / banner.getIntrinsicHeight() < 1.4f) banner = null;
             a.isBanner = banner != null;
             a.art = banner != null ? banner : ri.loadIcon(pm);
             a.color = sampleColor(a.pkg, a.art);
@@ -553,7 +555,11 @@ public class MainActivity extends Activity {
         if (tim != null) for (TvInputInfo t : tim.getTvInputList()) {
             if (t.isPassthroughInput() && !t.isHidden(this)) inputs.add(t);
         }
-        Collections.sort(inputs, (x, y) -> inputLabel(x).compareToIgnoreCase(inputLabel(y)));
+        Collections.sort(inputs, (x, y) -> {
+            boolean hx = inputLabel(x).startsWith("HDMI"), hy = inputLabel(y).startsWith("HDMI");
+            if (hx != hy) return hx ? -1 : 1;
+            return inputLabel(x).compareToIgnoreCase(inputLabel(y));
+        });
         for (TvInputInfo t : inputs) {
             rows.add(inputRow(inputLabel(t), () -> {
                 Intent i = new Intent(Intent.ACTION_VIEW, TvContract.buildChannelUriForPassthroughInput(t.getId()));
@@ -561,7 +567,7 @@ public class MainActivity extends Activity {
                 if (!launch(i)) openPackage(inputPickerPkg);
             }));
         }
-        if (isInstalled(liveTvPkg)) rows.add(inputRow("Live TV", () -> openPackage(liveTvPkg)));
+        if (isInstalled(liveTvPkg)) rows.add(0, inputRow("Live TV", () -> openPackage(liveTvPkg)));
         if (inputs.isEmpty() && isInstalled(inputPickerPkg)) rows.add(inputRow("All sources…", () -> openPackage(inputPickerPkg)));
 
         if (rows.isEmpty()) rows.add(inputRow("Settings", () -> launch(new Intent(Settings.ACTION_SETTINGS))));
