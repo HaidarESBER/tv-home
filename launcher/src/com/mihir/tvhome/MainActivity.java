@@ -3,6 +3,7 @@ package com.mihir.tvhome;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -28,6 +29,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.provider.Settings;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -102,7 +106,7 @@ public class MainActivity extends Activity {
     private PopupWindow inputsPopup;
 
     private final BroadcastReceiver tick = new BroadcastReceiver() {
-        @Override public void onReceive(Context c, Intent i) { updateClock(); updateWifi(); }
+        @Override public void onReceive(Context c, Intent i) { updateClock(); updateWifi(); updateMem(); }
     };
     private final BroadcastReceiver packages = new BroadcastReceiver() {
         @Override public void onReceive(Context c, Intent i) { buildApps(); }
@@ -143,6 +147,7 @@ public class MainActivity extends Activity {
         registerReceiver(tick, tf);
         updateClock();
         updateWifi();
+        updateMem();
         View last = lastFocusedId == View.NO_ID ? null : findViewById(lastFocusedId);
         if (last == null && !dockCards.isEmpty()) last = dockCards.get(0);
         if (last != null) last.requestFocus();
@@ -301,6 +306,10 @@ public class MainActivity extends Activity {
         LinearLayout right = new LinearLayout(this);
         right.setGravity(Gravity.CENTER_VERTICAL);
         right.setClipChildren(false);
+        memPill = pill("", "");
+        memPill.setFocusable(false);
+        memPill.setOnFocusChangeListener(null);
+        right.addView(memPill, llp(-2, dp(30), dp(10), 0, 0, 0));
         TextView inputs = pill("Inputs", "⇥");
         inputs.setOnClickListener(v -> showInputs(v));
         wifiPill = pill("Wi-Fi", "◉");
@@ -618,6 +627,8 @@ public class MainActivity extends Activity {
 
     // ---------------------------------------------------------------- status
 
+    private TextView memPill;
+
     private void updateClock() {
         Calendar now = Calendar.getInstance();
         int h = now.get(Calendar.HOUR_OF_DAY);
@@ -626,6 +637,20 @@ public class MainActivity extends Activity {
         clock.setText(new SimpleDateFormat(is24 ? "H:mm" : "h:mm", Locale.getDefault()).format(now.getTime()));
         ampm.setText(is24 ? "" : (h < 12 ? "AM" : "PM"));
         date.setText(new SimpleDateFormat("EEEE  d MMMM", Locale.getDefault()).format(now.getTime()).toUpperCase(Locale.getDefault()));
+    }
+
+    /** Free RAM readout: green above 250 MB, amber 150-250, red below. */
+    private void updateMem() {
+        if (memPill == null) return;
+        ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
+        am.getMemoryInfo(mi);
+        long mb = mi.availMem / (1024 * 1024);
+        int color = mb >= 250 ? 0xFF4CD964 : mb >= 150 ? 0xFFFFC857 : 0xFFFF5A52;
+        String txt = "●  " + mb + " MB free";
+        SpannableString sp = new SpannableString(txt);
+        sp.setSpan(new ForegroundColorSpan(color), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        memPill.setText(sp);
     }
 
     private void updateWifi() {
