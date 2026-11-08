@@ -62,7 +62,7 @@ def main():
                   "ro.build.version.release", "ro.build.version.sdk", "ro.build.display.id"):
             print(f"{p} = {dev.shell(f'getprop {p}').strip()}")
     elif a[0] == "--batch":
-        for line in sys.stdin:
+        for line in sys.stdin.read().lstrip(chr(0xFEFF)).splitlines(True):
             line = line.strip()
             if line and not line.startswith("#"):
                 print(f"$ {line}\n{dev.shell(line, read_timeout_s=120).rstrip()}")
