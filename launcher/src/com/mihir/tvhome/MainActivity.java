@@ -624,11 +624,18 @@ public class MainActivity extends Activity {
     private void updateWifi() {
         String name = "Wi-Fi";
         try {
-            WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-            if (wm != null && wm.getConnectionInfo() != null) {
-                String s = wm.getConnectionInfo().getSSID();
+            android.net.ConnectivityManager cm = (android.net.ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+            android.net.Network net = cm == null ? null : cm.getActiveNetwork();
+            android.net.NetworkCapabilities caps = net == null ? null : cm.getNetworkCapabilities(net);
+            if (caps == null) {
+                name = "Offline";
+            } else if (caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                name = "Ethernet";
+            } else {
+                // The SSID is redacted ("<unknown ssid>") when system location is off; fall back to "Wi-Fi".
+                WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+                String s = wm == null || wm.getConnectionInfo() == null ? null : wm.getConnectionInfo().getSSID();
                 if (s != null && !s.contains("unknown ssid")) name = s.replace("\"", "");
-                if (wm.getConnectionInfo().getNetworkId() == -1) name = "Offline";
             }
         } catch (SecurityException ignored) { }
         wifiPill.setText("◉  " + name);
